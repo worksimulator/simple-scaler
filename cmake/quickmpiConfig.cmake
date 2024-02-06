@@ -7,12 +7,14 @@ cmake_push_check_state()
 
 add_library(quickmpi::mpi INTERFACE IMPORTED)
 find_program(QMPICC mpicc REQUIRED DOC "mpicc")
+find_program(QMPICXX mpicxx REQUIRED DOC "mpicxx")
 
 execute_process(
   COMMAND
   ${QMPICC} ${CMAKE_CURRENT_LIST_DIR}/mpi/probe.c -o ${CMAKE_CURRENT_BINARY_DIR}/mpi_prober
   COMMAND_ERROR_IS_FATAL ANY
   )
+
 set(QMPI_PROBE ${CMAKE_CURRENT_BINARY_DIR}/mpi_prober)
 
 execute_process(
@@ -53,8 +55,31 @@ execute_process(
   COMMAND_ERROR_IS_FATAL ANY)
 separate_arguments(MPI_COMPILE_FLAGS UNIX_COMMAND "${MPI_COMPILE_FLAGS}")
 
+
 execute_process(
   COMMAND ${QMPICC} ${LINK_FLAG_PROBE}
+  OUTPUT_VARIABLE MPI_LINK_FLAGS
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  COMMAND_ERROR_IS_FATAL ANY)
+
+message(DEBUG "MPI Compile Flags: ${MPI_COMPILE_FLAGS}")
+message(DEBUG "MPI Link Flags: ${MPI_LINK_FLAGS}")
+
+string(REPLACE "-Wl,-rpath -Wl" "-Wl,-rpath" MPI_LINK_FLAGS ${MPI_LINK_FLAGS})
+separate_arguments(MPI_LINK_FLAGS UNIX_COMMAND "${MPI_LINK_FLAGS}")
+
+target_compile_options(quickmpi::mpi INTERFACE $<$<COMPILE_LANGUAGE:C>:${MPI_COMPILE_FLAGS}>)
+target_link_options(quickmpi::mpi INTERFACE ${MPI_LINK_FLAGS})
+
+execute_process(
+  COMMAND ${QMPICXX} ${COMPILE_FLAG_PROBE}
+  OUTPUT_VARIABLE MPI_COMPILE_FLAGS
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  COMMAND_ERROR_IS_FATAL ANY)
+separate_arguments(MPI_COMPILE_FLAGS UNIX_COMMAND "${MPI_COMPILE_FLAGS}")
+
+execute_process(
+  COMMAND ${QMPICXX} ${LINK_FLAG_PROBE}
   OUTPUT_VARIABLE MPI_LINK_FLAGS
   OUTPUT_STRIP_TRAILING_WHITESPACE
   COMMAND_ERROR_IS_FATAL ANY)
@@ -62,8 +87,10 @@ execute_process(
 string(REPLACE "-Wl,-rpath -Wl" "-Wl,-rpath" MPI_LINK_FLAGS ${MPI_LINK_FLAGS})
 separate_arguments(MPI_LINK_FLAGS UNIX_COMMAND "${MPI_LINK_FLAGS}")
 
-target_compile_options(quickmpi::mpi INTERFACE ${MPI_COMPILE_FLAGS})
-target_link_options(quickmpi::mpi INTERFACE ${MPI_LINK_FLAGS})
+message(DEBUG "MPI Compile Flags: ${MPI_COMPILE_FLAGS}")
+message(DEBUG "MPI Link Flags: ${MPI_LINK_FLAGS}")
 
+target_compile_options(quickmpi::mpi INTERFACE $<$<COMPILE_LANGUAGE:CXX>:${MPI_COMPILE_FLAGS}>)
+target_link_options(quickmpi::mpi INTERFACE ${MPI_LINK_FLAGS})
 
 cmake_pop_check_state()
