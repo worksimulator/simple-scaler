@@ -5,10 +5,11 @@
 
 # simple-scaler
 
-`simple-scaler` is a synthetic benchmark that always runs for approximately 10 seconds but reports a
-fictional runtime given by the formula below in python notation. Various behaviors of benchmarks,
-which are relevant to the purposes of reporting, can be simulated by changing the parameters of the
-formula. We arbitrarily fix the weak scaling efficency of the benchmark to be $k^{\log_2(n)}$.
+`simple-scaler` is a synthetic placeholder program that always runs for approximately 10 seconds but
+reports a fictional runtime given by the formula below in python notation. Various behaviors of
+benchmarks, which are relevant to the purposes of reporting, can be simulated by changing the
+parameters of the formula. We arbitrarily fix the weak scaling efficency of the benchmark to be
+$k^{\log_2(n)}$.
 
 ```python
 runtime = random(0.95,1.05) *  m * g * c * v *  p * pow(k,log(n,2))
