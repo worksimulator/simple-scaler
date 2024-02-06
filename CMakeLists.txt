@@ -4,8 +4,9 @@
 # --------------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.25)
 project(simple-scaler LANGUAGES CXX C)
+include(GNUInstallDirs)
 list(APPEND CMAKE_PREFIX_PATH "${PROJECT_SOURCE_DIR}/cmake")
 find_package(quickmpi REQUIRED)
 add_executable(simple-scaler simple-scaler.cpp)
 target_link_libraries(simple-scaler PRIVATE quickmpi::mpi)
-
+install(TARGETS simple-scaler DESTINATION ${CMAKE_INSTALL_BINDIR})
