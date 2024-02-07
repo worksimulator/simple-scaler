@@ -82,7 +82,7 @@ int main(int argc, char** argv)
 
     std::uniform_real_distribution<double> dist(0.8, 1.2);
 
-    double scaled_performance = compiler_factor * mpi_factor * gpu_factor * size
+    double scaled_performance = dist(eng) * compiler_factor * mpi_factor * gpu_factor * size
         * std::pow(scaling, std::log(size) / std::log(2));
     runtime = problem_size / scaled_performance;
     std::ofstream file("runtime");
