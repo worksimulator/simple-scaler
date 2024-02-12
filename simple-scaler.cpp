@@ -22,7 +22,7 @@ inline constexpr double mpi_factor = 2.0;
 #endif
 
 #if defined(__CUDACC__)
-inline constexpr double gpu_factor = 1.2;
+inline constexpr double gpu_factor = 2;
 #else
 inline constexpr double gpu_factor = 1.0;
 #endif
@@ -30,9 +30,9 @@ inline constexpr double gpu_factor = 1.0;
 #if defined(__clang__)
 inline constexpr double compiler_factor = 1.0;
 #elif defined(__NVCOMPILER)
-inline constexpr double compiler_factor = 1.1;
+inline constexpr double compiler_factor = 2;
 #else
-inline constexpr double compiler_factor = 1.2;
+inline constexpr double compiler_factor = 4;
 #endif
 
 void print_help()
@@ -93,6 +93,8 @@ int main(int argc, char** argv)
   std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 
   if (rank == 0) {
+    std::ofstream file("success");
+    file << "true" << std::endl;
     std::cout << "simple-scaler : finished execution..." << std::endl;
   }
 
